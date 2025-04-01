@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVigil Query</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button, input { padding: 10px; font-size: 16px; margin: 5px; }
+        #output { white-space: pre-line; text-align: left; border: 1px solid #ddd; padding: 10px; max-width: 600px; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h1>MedVigil AI</h1>
+    
+    <!-- Text input for the user prompt -->
+    <input type="text" id="userPrompt" placeholder="Enter your medical query..." style="width: 60%;">
+    <button onclick="sendPrompt()">Submit Query</button>
+
+    <button onclick="startMedVigil()">Run MedVigil</button>
+    <div id="output">Waiting for output...</div>
+
+    <script>
+            function sendPrompt() {
+        let userPrompt = document.getElementById("userPrompt").value;
+
+        if (!userPrompt) {
+            alert("Please enter a query!");
+            return;
+        }
+
+        // Debugging log
+        console.log("📤 Sending prompt:", userPrompt);
+
+        fetch("http://localhost:8000/save_prompt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: userPrompt })
+        })
+        .then(response => response.json())  // Ensure response is parsed
+        .then(data => {
+            console.log("📝 Server Response:", data);
+            if (data.message) {
+                alert("✅ Prompt saved successfully!");
+            } else {
+                alert("❌ Error: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("❌ Fetch error:", error);
+            alert("❌ Error sending prompt!");
+        });
+    }
+
+
+    function startMedVigil() {
+    let outputDiv = document.getElementById("output");
+    outputDiv.innerHTML = "🔄 Connecting to MedVigil...<br>";
+
+    let socket = new WebSocket("ws://localhost:8000/ws");
+
+    socket.onopen = function() {
+        outputDiv.innerHTML = "✅ Connected! Running MedVigil...<br>";
+    };
+
+    socket.onmessage = function(event) {
+        console.log("📩 Received from WebSocket:", event.data);
+        
+        // Create a new paragraph for each message to maintain readability
+        let newMessage = document.createElement("p");
+        newMessage.textContent = event.data;
+        outputDiv.appendChild(newMessage);
+
+        // Auto-scroll to latest message
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+    };
+
+    socket.onerror = function(event) {
+        console.error("❌ WebSocket error:", event);
+        outputDiv.innerHTML = "<p style='color: red;'>❌ Error connecting to WebSocket!</p>";
+    };
+
+    socket.onclose = function(event) {
+        if (event.wasClean) {
+            console.log("✅ WebSocket closed cleanly.");
+            outputDiv.innerHTML += "<p>✅ Process completed!</p>";
+        } else {
+            console.error("🚨 WebSocket closed unexpectedly. Retrying...");
+            outputDiv.innerHTML = "<p style='color: orange;'>⚠️ Connection lost. Retrying in 3 seconds...</p>";
+            setTimeout(startMedVigil, 3000);  // Auto-reconnect
+        }
+    };
+}
+
+
+    </script>
+</body>
+</html>
