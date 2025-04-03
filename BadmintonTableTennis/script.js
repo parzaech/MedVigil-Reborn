@@ -1,4 +1,4 @@
-var words = ['Tell us what ails you.', 'AI in Medicine.','We will fix you.', ':)'],
+var words = ['Tell us what ails you.', 'AI in Medicine.', 'We will fix you.', ':)'],
     part,
     i = 0,
     offset = 0,
@@ -9,41 +9,39 @@ var words = ['Tell us what ails you.', 'AI in Medicine.','We will fix you.', ':)
     speed = 70;
 
 var wordflick = function () {
-  setInterval(function () {
-    if (forwards) {
-      if (offset >= words[i].length) {
-        ++skip_count;
-        if (skip_count == skip_delay) {
-          forwards = false;
-          skip_count = 0;
+    setInterval(function () {
+        if (forwards) {
+            if (offset >= words[i].length) {
+                ++skip_count;
+                if (skip_count == skip_delay) {
+                    forwards = false;
+                    skip_count = 0;
+                }
+            }
+        } else {
+            if (offset == 0) {
+                forwards = true;
+                i++;
+                offset = 0;
+                if (i >= len) {
+                    i = 0;
+                }
+            }
         }
-      }
-    }
-    else {
-      if (offset == 0) {
-        forwards = true;
-        i++;
-        offset = 0;
-        if (i >= len) {
-          i = 0;
+        part = words[i].substr(0, offset);
+        if (skip_count == 0) {
+            if (forwards) {
+                offset++;
+            } else {
+                offset--;
+            }
         }
-      }
-    }
-    part = words[i].substr(0, offset);
-    if (skip_count == 0) {
-      if (forwards) {
-        offset++;
-      }
-      else {
-        offset--;
-      }
-    }
-    $('.word').text(part);
-  },speed);
+        $('.word').text(part);
+    }, speed);
 };
 
 $(document).ready(function () {
-  wordflick();
+    wordflick();
 });
 
 var video = document.querySelector("#videoElement");
@@ -53,93 +51,72 @@ var stopVideo = document.querySelector("#stop");
 var mediaRecorder;
 var recordedChunks = [];
 
-// Request camera and microphone access
-if (navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then(function (stream) {
-            video.srcObject = stream;
-        })
-        .catch(function (error) {
-            console.log("Error accessing media devices:", error);
-        });
-}
-
 // Start recording
 function start() {
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(function (stream) {
-                video.srcObject = stream;
+    recordedChunks = []; // Clear previous recordings
 
-                // Initialize MediaRecorder
-                mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: "video/webm; codecs=vp9,opus", // Specify codecs for better compatibility
-                    bitsPerSecond: 2500000 // Adjust bitrate for quality
-                });
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+            video.srcObject = stream;
+            mediaRecorder = new MediaRecorder(stream);
 
-                // Handle data availability
-                mediaRecorder.ondataavailable = function (e) {
-                    if (e.data.size > 0) {
-                        recordedChunks.push(e.data); // Store recorded chunks
-                    }
-                };
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                    console.log("📼 Video chunk added.");
+                }
+            };
 
-                // Handle recording stop
-                mediaRecorder.onstop = function () {
-                    // Create a Blob from the recorded chunks
-                    var blob = new Blob(recordedChunks, { type: "video/webm" });
+            mediaRecorder.onstop = function () {
+                console.log("🎥 Recording stopped. Preparing to upload...");
 
-                    // Generate a dynamic filename with a timestamp
-                    var timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-                    var filename = `recorded-video-${timestamp}.webm`;
+                if (recordedChunks.length === 0) {
+                    console.error("❌ No recorded video available.");
+                    return;
+                }
 
-                    // Create a download link
-                    var url = URL.createObjectURL(blob);
-                    var a = document.createElement("a");
-                    document.body.appendChild(a);
-                    a.style = "display: none";
-                    a.href = url;
-                    a.download = filename;
-                    a.click(); // Trigger the download
-                    window.URL.revokeObjectURL(url); // Clean up
+                // Ensure all chunks are processed before upload
+                setTimeout(uploadVideo, 500);
+            };
 
-                    // Clear recorded chunks for the next recording
-                    recordedChunks = [];
-                };
+            mediaRecorder.start();
+        })
+        .catch(error => console.error("❌ Error accessing camera:", error));
+}
 
-                // Start recording
-                mediaRecorder.start();
-            })
-            .catch(function (error) {
-                console.log("Error accessing media devices:", error);
-            });
+function stop() {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop(); // This triggers onstop()
     }
 }
 
-// Stop recording
-function stop() {
-    if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop(); // Stop the recording
+function uploadVideo() {
+    if (recordedChunks.length === 0) {
+        console.error("❌ No recorded video available.");
+        return;
     }
 
-    // Stop all tracks in the stream
-    var stream = video.srcObject;
-    var tracks = stream.getTracks();
+    let blob = new Blob(recordedChunks, { type: "video/webm" });
+    let formData = new FormData();
+    formData.append("file", blob, "recorded-video.webm");
 
-    for (var i = 0; i < tracks.length; i++) {
-        var track = tracks[i];
-        track.stop(); // Stop each track
-    }
+    fetch("http://localhost:8000/upload_video", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("📄 Transcription received:", data.transcription);
+        document.getElementById("userPrompt").value = data.transcription;
+    })
+    .catch(error => console.error("❌ Video upload failed:", error));
 
-    video.srcObject = null; // Clear the video source
+    recordedChunks = []; // Clear recorded data after upload
 }
 
 // Add event listeners to buttons
 startVideo.addEventListener("click", start, false);
 stopVideo.addEventListener("click", stop, false);
-
-
-
 
 function sendPrompt() {
     let userPrompt = document.getElementById("userPrompt").value;
@@ -172,42 +149,45 @@ function sendPrompt() {
     });
 }
 
-
 function startMedVigil() {
-let outputDiv = document.getElementById("output");
-outputDiv.innerHTML = "🔄 Connecting to MedVigil...<br>";
+    let outputBox = document.getElementById("output");
+    outputBox.classList.add("waiting");  // Add loading effect
 
-let socket = new WebSocket("ws://localhost:8000/ws");
+    // Simulate processing time
+    setTimeout(() => {
+        outputBox.classList.remove("waiting");
+        outputBox.innerHTML = "✅ MedVigil process complete!";
+    }, 3000);
+    let socket = new WebSocket("ws://localhost:8000/ws");
 
-socket.onopen = function() {
-    outputDiv.innerHTML = "✅ Connected! Running MedVigil...<br>";
-};
+    socket.onopen = function () {
+        outputDiv.innerHTML = "✅ Connected! Running MedVigil...<br>";
+    };
 
-socket.onmessage = function(event) {
-    console.log("📩 Received from WebSocket:", event.data);
-    
-    // Create a new paragraph for each message to maintain readability
-    let newMessage = document.createElement("p");
-    newMessage.textContent = event.data;
-    outputDiv.appendChild(newMessage);
+    socket.onmessage = function (event) {
+        console.log("📩 Received from WebSocket:", event.data);
 
-    // Auto-scroll to latest message
-    outputDiv.scrollTop = outputDiv.scrollHeight;
-};
+        let newMessage = document.createElement("p");
+        newMessage.textContent = event.data;
+        outputDiv.appendChild(newMessage);
 
-socket.onerror = function(event) {
-    console.error("❌ WebSocket error:", event);
-    outputDiv.innerHTML = "<p style='color: red;'>❌ Error connecting to WebSocket!</p>";
-};
+        // Auto-scroll to latest message
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+    };
 
-socket.onclose = function(event) {
-    if (event.wasClean) {
-        console.log("✅ WebSocket closed cleanly.");
-        outputDiv.innerHTML += "<p>✅ Process completed!</p>";
-    } else {
-        console.error("🚨 WebSocket closed unexpectedly. Retrying...");
-        outputDiv.innerHTML = "<p style='color: orange;'>⚠️ Connection lost. Retrying in 3 seconds...</p>";
-        setTimeout(startMedVigil, 3000);  // Auto-reconnect
-    }
-};
+    socket.onerror = function (event) {
+        console.error("❌ WebSocket error:", event);
+        outputDiv.innerHTML = "<p style='color: red;'>❌ Error connecting to WebSocket!</p>";
+    };
+
+    socket.onclose = function (event) {
+        if (event.wasClean) {
+            console.log("✅ WebSocket closed cleanly.");
+            outputDiv.innerHTML += "<p>✅ Process completed!</p>";
+        } else {
+            console.error("🚨 WebSocket closed unexpectedly. Retrying...");
+            outputDiv.innerHTML = "<p style='color: orange;'>⚠️ Connection lost. Retrying in 3 seconds...</p>";
+            setTimeout(startMedVigil, 3000);  // Auto-reconnect
+        }
+    };
 }

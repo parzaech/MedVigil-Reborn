@@ -1,38 +1,35 @@
-
-.word {
-    margin: auto;
-    color: white;
-    font: 700 normal 1.5em 'tahoma';
-    text-shadow: 5px 2px #222324, 2px 4px #222324, 3px 5px #222324;
-  }
-
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
 .container {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100vh;
+  margin-bottom: 0; /* Ensure there's no extra margin */
+  padding-bottom: 0; /* Remove any internal spacing */
 }
+
 .left {
-    flex: 1;
-    background-color: black;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-family: Arial, sans-serif;
+  flex: 1;
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-family: Arial, sans-serif;
+  font-weight: bolder;
 }
+
 .right {
-    flex: 1;
-    background-color: white;
-    position: relative; /* Ensures child elements can be positioned absolutely */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex: 1;
+  background-color: white;
+  position: relative; /* Ensures child elements can be positioned absolutely */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #bg-wrap {
@@ -46,109 +43,166 @@
 }
 
 #videoElement {
-    background-color: black;
-    height: 50vh;
-    width: 50%;
-    max-width: 600px; /* Ensures it doesn't grow too large */
-    border: 2px solid black; /* Optional */
-    margin: 0 auto; /* Centers horizontally */
+  background-color: black;
+  height: 50vh;
+  width: 50%;
+  max-width: 600px; /* Ensures it doesn't grow too large */
+  border: 2px solid black; /* Optional */
+  margin: 0 auto; /* Centers horizontally */
 }
 
 #vidcontainer {
-    position: relative; /* Ensures it stays in front of the background */
-    z-index: 1; /* Higher than bg-wrap */
-    display: flex;
-    flex-direction: column; /* Aligns children (video & button) vertically */
-    align-items: center; /* Centers them horizontally */
-    justify-content: center; /* Centers them vertically */
-    height: 100%; /* Ensures full height of the container */
-    width: 100%;
+  position: relative; /* Ensures it stays in front of the background */
+  z-index: 1; /* Higher than bg-wrap */
+  display: flex;
+  flex-direction: column; /* Aligns children (video & button) vertically */
+  align-items: center; /* Centers them horizontally */
+  justify-content: center; /* Centers them vertically */
+  height: 100%; /* Ensures full height of the container */
+  width: 100%;
 }
-
 
 video {
-    width: 80%; /* Adjust width as needed */
-    max-width: 600px; /* Prevents it from being too large */
-    border: 1px solid black; /* Optional: Adds a border */
-    border-radius: 5%;
+  width: 80%; /* Adjust width as needed */
+  max-width: 600px; /* Prevents it from being too large */
+  border: 1px solid black; /* Optional: Adds a border */
+  border-radius: 5%;
 }
 
-#stop {
-    margin-top: 30px; /* Space between video and button */
-    cursor: pointer;
-}
-
-#start{
+#stop, #start {
   margin-top: 30px; /* Space between video and button */
   cursor: pointer;
 }
 
-.buttonContainer{
+.buttonContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   width: 100vh;
 }
 
+/* Centering and spacing */
 .below {
-    text-align: center;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  background-color: black;
+  padding-top: 30px;
 }
 
+/* Input box styling */
 input#userPrompt {
-    width: 80%;
-    padding: 15px;
-    font-size: 20px;
-    border: 2px solid #555;
-    border-radius: 5px;    
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
+  width: 80%;
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid white;
+  border-radius: 8px;    
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  background-color: black;
+  transition: all 0.3s ease-in-out;
+  color: white;
 }
 
+input#userPrompt::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+input#userPrompt:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Button container: aligns buttons side by side */
+.button-container {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+  margin-top: 10px;
+}
+
+/* Buttons */
 button {
-    padding: 15px 20px;
-    font-size: 20px;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px;
-    transition: 0.3s;
+  padding: 12px 25px;
+  font-size: 18px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #000000, #333333);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Button hover effect */
 button:hover {
-    background-color: #0056b3;
+  background: linear-gradient(135deg, #0056b3, #003f7f);
+  transform: scale(1.05);
 }
 
+/* Button click effect */
+button:active {
+  transform: scale(0.95);
+}
+
+/* Full-width output box */
 #output {
-    font-size: 18px;
-    border: 2px solid #ddd;
-    padding: 20px;
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: #f9f9f9;
-    min-height: 150px;
-    border-radius: 5px;
-    text-align: left;
-    font-family: 'Courier New', Courier, monospace;
+  font-size: 18px;
+  border: 2px solid white; /* White border */
+  padding: 20px;
+  width: 80%; /* Adjusted width */
+  min-height: 150px;
+  border-radius: 8px;
+  text-align: left;
+  font-family: 'Courier New', Courier, monospace;
+  background: black; /* Background color changed to black */
+  color: white; /* Text color changed to white */
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2); /* Optional: subtle white glow */
+  position: relative;
+  overflow-y: auto;
 }
 
+/* Ensure "Waiting for output" text is white */
+#output::before {
+  content: "Waiting for output...";
+  color: white; /* Ensure text is visible */
+  display: block;
+  font-style: italic;
+  opacity: 0.8;
+}
 
-/* CSS */
+/* Loading effect when waiting for output */
+#output.waiting {
+  background: black; /* Keep background black */
+  color: white; /* Text remains white */
+  animation: pulse 1.5s infinite;
+}
+
+/* Animation for loading effect */
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+/* Fancy button styling */
 .button-50 {
   appearance: button;
   background-color: #000;
   background-image: none;
   border: 1px solid #000;
   border-radius: 4px;
-  box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
+  box-shadow: #fff 4px 4px 0 0, #000 4px 4px 0 1px;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
   display: inline-block;
-  font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
+  font-family: ITCAvantGardeStd-Bk, Arial, sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -184,6 +238,6 @@ button:hover {
 
 @media (min-width: 768px) {
   .button-50 {
-    padding: 12px 50px;
+      padding: 12px 50px;
   }
 }

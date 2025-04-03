@@ -12,7 +12,6 @@
     <script defer src="script.js"></script>
 </head>
 <body>
-
     <div class="container">
         <div class="left">
             <span class="word"></span> <!-- This will show animated text -->
@@ -64,16 +63,20 @@
         </div>
     </div>
     <div class="below">
-        <input type="text" id="userPrompt" placeholder="Enter your medical query..." style="width: 60%;">
-        <button onclick="sendPrompt()">Submit Query</button>
-
-        <button onclick="startMedVigil()">Run MedVigil</button>
-        <div id="output">Waiting for output...</div>
-
+        <input type="text" id="userPrompt" placeholder="Transcribed text will appear here..." readonly>
+    
+        <div class="button-container">
+            <button onclick="sendPrompt()">Submit Query</button>
+            <button onclick="startMedVigil()">Run MedVigil</button>
+        </div>
+    
+        <div id="output"></div>
     </div>
+    
 
     <script type="module">
         // Import the functions you need from the SDKs you need
+        /*
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
         import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-storage.js";
@@ -93,6 +96,7 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const storage = getStorage(app); // Initialize Firebase Storage
+        */
     </script>
 </body>
 </html>
