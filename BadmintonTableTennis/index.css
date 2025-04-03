@@ -1,0 +1,189 @@
+
+.word {
+    margin: auto;
+    color: white;
+    font: 700 normal 1.5em 'tahoma';
+    text-shadow: 5px 2px #222324, 2px 4px #222324, 3px 5px #222324;
+  }
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container {
+    display: flex;
+    height: 100vh;
+}
+.left {
+    flex: 1;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-family: Arial, sans-serif;
+}
+.right {
+    flex: 1;
+    background-color: white;
+    position: relative; /* Ensures child elements can be positioned absolutely */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#bg-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Sends it to the background */
+  overflow: hidden;
+}
+
+#videoElement {
+    background-color: black;
+    height: 50vh;
+    width: 50%;
+    max-width: 600px; /* Ensures it doesn't grow too large */
+    border: 2px solid black; /* Optional */
+    margin: 0 auto; /* Centers horizontally */
+}
+
+#vidcontainer {
+    position: relative; /* Ensures it stays in front of the background */
+    z-index: 1; /* Higher than bg-wrap */
+    display: flex;
+    flex-direction: column; /* Aligns children (video & button) vertically */
+    align-items: center; /* Centers them horizontally */
+    justify-content: center; /* Centers them vertically */
+    height: 100%; /* Ensures full height of the container */
+    width: 100%;
+}
+
+
+video {
+    width: 80%; /* Adjust width as needed */
+    max-width: 600px; /* Prevents it from being too large */
+    border: 1px solid black; /* Optional: Adds a border */
+    border-radius: 5%;
+}
+
+#stop {
+    margin-top: 30px; /* Space between video and button */
+    cursor: pointer;
+}
+
+#start{
+  margin-top: 30px; /* Space between video and button */
+  cursor: pointer;
+}
+
+.buttonContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100vh;
+}
+
+.below {
+    text-align: center;
+    margin-top: 20px;
+}
+
+input#userPrompt {
+    width: 80%;
+    padding: 15px;
+    font-size: 20px;
+    border: 2px solid #555;
+    border-radius: 5px;    
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+button {
+    padding: 15px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#output {
+    font-size: 18px;
+    border: 2px solid #ddd;
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #f9f9f9;
+    min-height: 150px;
+    border-radius: 5px;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+/* CSS */
+.button-50 {
+  appearance: button;
+  background-color: #000;
+  background-image: none;
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 5px 10px 0;
+  overflow: visible;
+  padding: 12px 40px;
+  text-align: center;
+  text-transform: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button-50:focus {
+  text-decoration: none;
+}
+
+.button-50:hover {
+  text-decoration: none;
+}
+
+.button-50:active {
+  box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
+  outline: 0;
+}
+
+.button-50:not([disabled]):active {
+  box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
+  transform: translate(2px, 2px);
+}
+
+@media (min-width: 768px) {
+  .button-50 {
+    padding: 12px 50px;
+  }
+}
