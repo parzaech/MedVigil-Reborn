@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medical Entity Recognition</title>
+  <!-- Add these to your existing head -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Add this CSS to your existing styles */
+    .entity-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .popup-content {
+      background: #121212;
+      width: 80%;
+      max-width: 600px;
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    .entity-tag {
+      background: rgba(58, 123, 213, 0.2);
+      color: #3a7bd5;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Add this to your existing HTML -->
+<input type="text" id="userPrompt" placeholder="Describe your symptoms...">
+<button id="analyzeBtn">Analyze Text</button>
+
+<div id="entityPopup" class="entity-popup">
+  <div class="popup-content">
+    <h3>Detected Medical Concepts</h3>
+    <div id="resultsContainer"></div>
+    <button id="closePopup">Close</button>
+  </div>
+</div>
+
+<!-- Add these scripts at the end of your body -->
+<script src="https://unpkg.com/compromise@14.11.0/builds/compromise.min.js"></script>
+<script src="https://unpkg.com/compromise-health@0.1.0/builds/compromise-health.min.js"></script>
+
+<script>
+  // Real working implementation
+  document.getElementById('analyzeBtn').addEventListener('click', function() {
+    const text = document.getElementById('userPrompt').value;
+    
+    if (!text.trim()) {
+      alert("Please enter some symptoms to analyze");
+      return;
+    }
+    
+    try {
+      const entities = extractMedicalEntities(text);
+      showEntities(entities);
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      document.getElementById('resultsContainer').innerHTML = 
+        '<p style="color:#ff6b6b">Analysis failed. Please try again.</p>';
+      document.getElementById('entityPopup').style.display = 'flex';
+    }
+  });
+
+  // Actual NLP Processing Function
+  function extractMedicalEntities(text) {
+    const nlp = window.nlp(text);
+    nlp.extend(window.compromiseHealth);
+    
+    return {
+      symptoms: nlp.medicalSymptoms().out('array'),
+      medications: nlp.medicalDrugs().out('array'),
+      conditions: nlp.medicalConditions().out('array')
+    };
+  }
+
+  // Display Results
+  function showEntities(entities) {
+    let html = '';
+    
+    if (entities.symptoms.length > 0) {
+      html += `<h4>Symptoms</h4><div>`;
+      entities.symptoms.forEach(s => {
+        html += `<span class="entity-tag">${s}</span>`;
+      });
+      html += `</div>`;
+    }
+    
+    // Repeat for medications and conditions...
+    
+    document.getElementById('resultsContainer').innerHTML = html || 
+      '<p>No medical concepts detected</p>';
+    document.getElementById('entityPopup').style.display = 'flex';
+  }
+
+  // Close Popup
+  document.getElementById('closePopup').addEventListener('click', function() {
+    document.getElementById('entityPopup').style.display = 'none';
+  });
+</script>
+
+</body>
+</html>
