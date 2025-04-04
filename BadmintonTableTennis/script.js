@@ -1,47 +1,64 @@
-var words = ['Tell us what ails you.', 'AI in Medicine.', 'We will fix you.', ':)'],
-    part,
-    i = 0,
-    offset = 0,
-    len = words.length,
-    forwards = true,
-    skip_count = 0,
-    skip_delay = 15,
-    speed = 70;
+var animationWords = ['Tell us what ails you.', 'AI in Medicine.', 'We will fix you.', ':)'];
+var animationInterval;
 
-var wordflick = function () {
-    setInterval(function () {
-        if (forwards) {
-            if (offset >= words[i].length) {
-                ++skip_count;
-                if (skip_count == skip_delay) {
-                    forwards = false;
-                    skip_count = 0;
-                }
-            }
-        } else {
-            if (offset == 0) {
-                forwards = true;
-                i++;
-                offset = 0;
-                if (i >= len) {
-                    i = 0;
-                }
-            }
-        }
-        part = words[i].substr(0, offset);
-        if (skip_count == 0) {
-            if (forwards) {
-                offset++;
-            } else {
-                offset--;
-            }
-        }
-        $('.word').text(part);
-    }, speed);
-};
+function switchToImages() {
+  // 1. Fade out animated text
+  $('.word').animate({ opacity: 0 }, 600, function() {
+    $(this).hide();
+    
+    // 2. Fade in text image
+    $('#text-image')
+      .css('opacity', 0)
+      .show()
+      .animate({ opacity: 1 }, 800, function() {
+        
+        // 3. After text image appears, show secondary image
+        $('#secondary-image')
+          .css('opacity', 0)
+          .show()
+          .animate({ opacity: 1 }, 800);
+      });
+  });
+}
+function runAnimationOnce() {
+  var part,
+      i = 0,
+      offset = 0,
+      len = animationWords.length,
+      forwards = true,
+      skip_count = 0,
+      skip_delay = 15,
+      speed = 70;
 
-$(document).ready(function () {
-    wordflick();
+  animationInterval = setInterval(function() {
+    if (forwards) {
+      if (offset >= animationWords[i].length) {
+        if (++skip_count == skip_delay) {
+          forwards = false;
+          skip_count = 0;
+        }
+      }
+    } else {
+      if (offset == 0) {
+        forwards = true;
+        i++;
+        offset = 0;
+        if (i >= len) {
+          clearInterval(animationInterval);
+          setTimeout(switchToImages, 500); // Changed from switchToImage
+          return;
+        }
+      }
+    }
+    
+    part = animationWords[i].substr(0, offset);
+    if (skip_count == 0) forwards ? offset++ : offset--;
+    $('.word').text(part);
+  }, speed);
+}
+
+$(document).ready(function() {
+  runAnimationOnce();
 });
 
 var video = document.querySelector("#videoElement");
@@ -191,3 +208,59 @@ function startMedVigil() {
         }
     };
 }
+
+// NER Section
+// Function to show entities in popup
+function showEntitiesPopup(entities) {
+  // Populate entity tags
+  populateEntitySection('symptomEntities', entities.symptoms);
+  populateEntitySection('medicationEntities', entities.medications); 
+  populateEntitySection('conditionEntities', entities.conditions);
+  
+  // Show popup
+  document.getElementById('entityPopup').style.display = 'flex';
+  
+  // Add analytics event
+  logEntityAnalysis(entities);
+}
+
+// Helper function to create entity tags
+function populateEntitySection(containerId, entities) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  if (entities && entities.length > 0) {
+    entities.forEach(entity => {
+      const tag = document.createElement('div');
+      tag.className = 'entity-tag';
+      tag.textContent = entity;
+      container.appendChild(tag);
+    });
+  } else {
+    container.innerHTML = '<span class="no-entities">None detected</span>';
+  }
+}
+
+// Close popup handlers
+document.querySelector('.close-btn').addEventListener('click', () => {
+  document.getElementById('entityPopup').style.display = 'none';
+});
+
+// Close when clicking outside content
+document.getElementById('entityPopup').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('entityPopup')) {
+    document.getElementById('entityPopup').style.display = 'none';
+  }
+});
+
+// Example usage with your NLP function
+async function analyzeAndShowEntities() {
+  const query = document.getElementById('userPrompt').value;
+  const entities = await analyzeMedicalQuery(query); // Your NLP function
+  showEntitiesPopup(entities);
+}
+
+// Attach to your existing button
+document.getElementById('analyzeBtn').addEventListener('click', analyzeAndShowEntities);
+
+

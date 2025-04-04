@@ -3,7 +3,34 @@
   padding: 0;
   box-sizing: border-box;
 }
+.word {
+  font-size: 3rem;
+  font-weight: bold;
+  transition: all 0.6s ease-out;
+}
 
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px; /* Controls space between images */
+}
+
+.image-container img {
+  max-width: 80%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth easing */
+  transform: translateY(20px); /* Starts slightly below */
+}
+
+.image-container img.active {
+  opacity: 1;
+  transform: translateY(0);
+}
 .container {
   display: flex;
   height: 100vh;
@@ -21,6 +48,9 @@
   font-size: 3rem;
   font-family: Arial, sans-serif;
   font-weight: bolder;
+  /* Change from here */
+  min-height: 150px; /* Adjust based on your largest text block */
+  position: relative;
 }
 
 .right {
@@ -79,6 +109,73 @@ video {
   flex-direction: row;
   justify-content: space-evenly;
   width: 100vh;
+}
+/* Doctors Section - Dark Theme */
+.doctors-section {
+  padding: 60px 20px;
+  background: #121212;  
+  text-align: center;
+  color: #e0e0e0; /* Light text for contrast */
+
+}
+
+.doctors-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #ffffff; /* Pure white for headings */
+  position: relative;
+  display: inline-block;
+}
+
+.doctors-section h2::after {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #3a7bd5, #00d2ff); /* Gradient accent */
+  bottom: -10px;
+  left: 25%;
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.doctor-card {
+  background: #1e1e1e; 
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  border: 1px solid #333;
+
+}
+
+.doctor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(58, 123, 213, 0.2); /* Blue tint on hover */
+  border-color: #3a7bd5; /* Accent color */
+}
+
+.doctor-card h3 {
+  margin: 20px 0 5px;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.specialization {
+  color: #00d2ff; /* Cyan accent */
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.experience {
+  color: #b0b0b0; /* Lighter gray */
+  padding-bottom: 20px;
 }
 
 /* Centering and spacing */
@@ -188,6 +285,88 @@ button:active {
   0% { opacity: 0.8; }
   50% { opacity: 1; }
   100% { opacity: 0.8; }
+}
+
+/* Popup Styles - Dark Theme */
+.entity-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: #121212;
+  border: 1px solid #333;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  padding: 25px;
+  box-shadow: 0 0 30px rgba(58, 123, 213, 0.2);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #00d2ff;
+}
+
+.entity-category {
+  margin: 20px 0;
+}
+
+.entity-category h4 {
+  color: #00d2ff;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.entity-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entity-tag {
+  background: rgba(58, 123, 213, 0.2);
+  color: #3a7bd5;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 1px solid #3a7bd5;
+  transition: all 0.3s;
+}
+
+.entity-tag:hover {
+  background: rgba(58, 123, 213, 0.4);
+  transform: translateY(-2px);
+}
+
+.popup-content {
+  animation: popIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* Fancy button styling */

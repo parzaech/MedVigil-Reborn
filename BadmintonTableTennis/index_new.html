@@ -10,11 +10,22 @@
 
     <link rel="stylesheet" href="index.css">
     <script defer src="script.js"></script>
+    
+    <!-- Fonts and Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+
     <div class="container">
         <div class="left">
-            <span class="word"></span> <!-- This will show animated text -->
+          <span class="word"></span>
+          <div class = "image-container">
+              <img id="text-image" src="words_final.png" alt="Project Description" style="display: none;"> 
+              <img id="secondary-image" src="workflow-1.png" alt="Additional Graphic" style="display: none;">
+          </div>
         </div>
         <div class="right">
             
@@ -63,7 +74,7 @@
         </div>
     </div>
     <div class="below">
-        <input type="text" id="userPrompt" placeholder="Transcribed text will appear here..." readonly>
+        <input type="text" id="userPrompt" placeholder="Your Query will appear here..." readonly>
     
         <div class="button-container">
             <button onclick="sendPrompt()">Submit Query</button>
@@ -72,6 +83,74 @@
     
         <div id="output"></div>
     </div>
+    
+    <section class="doctors-section">
+  <h2>Our Medical Team</h2>
+  <div class="doctors-grid">
+    <!-- Doctor 1 -->
+    <div class="doctor-card">
+      <h3>Dr. Akhilesh Pandey</h3>
+      <p class="specialization">Cardiologist</p>
+      <p class="experience">12 years experience</p>
+    </div>
+    
+    <!-- Doctor 2 -->
+    <div class="doctor-card">
+      <h3>Dr. Chandan Kumar</h3>
+      <p class="specialization">Neurologist</p>
+      <p class="experience">8 years experience</p>
+    </div>
+    
+        <!-- Doctor 3 -->
+    <div class="doctor-card">
+      <h3>Dr. Mehul Aggarwal</h3>
+      <p class="specialization">General Physician</p>
+      <p class="experience">4 years experience</p>
+    </div>
+        <!-- Doctor 4 -->
+    <div class="doctor-card">
+      <h3>Dr. Raj Sharma</h3>
+      <p class="specialization">Surgeon</p>
+      <p class="experience">2 years experience</p>
+    </div>
+            <!-- Doctor 5 -->
+    <div class="doctor-card">
+      <h3>Dr. Happy Dog</h3>
+      <p class="specialization">Research Expert</p>
+      <p class="experience">5 years experience</p>
+    </div>
+            <!-- Doctor 6 -->
+    <div class="doctor-card">
+      <h3>Dr. Preeti Verma</h3>
+      <p class="specialization">Vetenerain</p>
+      <p class="experience">6 years experience</p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- Entity Recognition Popup -->
+<div id="entityPopup" class="entity-popup">
+  <div class="popup-content">
+    <span class="close-btn">&times;</span>
+    <h3>Medical Entities Detected</h3>
+    
+    <div class="entity-category">
+      <h4><i class="fas fa-thermometer-half"></i> Symptoms</h4>
+      <div id="symptomEntities" class="entity-tags"></div>
+    </div>
+    
+    <div class="entity-category">
+      <h4><i class="fas fa-pills"></i> Medications</h4>
+      <div id="medicationEntities" class="entity-tags"></div>
+    </div>
+    
+    <div class="entity-category">
+      <h4><i class="fas fa-disease"></i> Conditions</h4>
+      <div id="conditionEntities" class="entity-tags"></div>
+    </div>
+  </div>
+</div>
     
 
     <script type="module">
