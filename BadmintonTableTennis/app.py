@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, Request, File, UploadFile
+from fastapi import FastAPI, WebSocket, Request, File, UploadFile, HTTPException
 import os
 import subprocess
 import json
@@ -6,30 +6,103 @@ import whisper
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 from fastapi.middleware.cors import CORSMiddleware
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
+from typing import Optional
+import torch
 
 app = FastAPI()
 
-# Load Whisper model once at startup
-model = whisper.load_model("small")  # Change to "base", "medium", or "large" if needed
+# Load models at startup
+model = whisper.load_model("small")  # Your existing Whisper model
+summarization_model = None
+summarization_tokenizer = None
 
 # Allow frontend to send requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this to your frontend domain if needed
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-def transcribe_audio(file_path: str) -> str:
-    """Transcribes speech from an audio file using Whisper."""
+@app.on_event("startup")
+async def load_models():
+    """Load MLX summarization model at startup"""
+    global summarization_model, summarization_tokenizer
     try:
-        result = model.transcribe(file_path)
-        return result["text"]
+        print("Loading MLX summarization model...")
+        model_name = "andito/mlx_summarization"
+        summarization_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        summarization_model = AutoModelForCausalLM.from_pretrained(model_name)
+        print("✅ Summarization model loaded successfully")
     except Exception as e:
-        print(f"❌ Transcription error: {e}")
-        return ""
+        print(f"❌ Failed to load summarization model: {e}")
 
+def generate_summary(text: str) -> dict:
+    """Generate summary using your specified MLX model with 3-point format"""
+    try:
+        # Write response to file (as in your original code)
+        with open("response.txt", "w") as f:
+            f.write(text)
+        
+        # Read and modify prompt exactly as you specified
+        with open("response.txt", "r") as file:
+            response_text = file.read().strip()
+
+        prompt = response_text + "\n\nSummarize in exactly three bullet points."
+
+        # Apply chat template if available
+        if hasattr(summarization_tokenizer, "apply_chat_template") and summarization_tokenizer.chat_template is not None:
+            messages = [{"role": "user", "content": prompt}]
+            prompt = summarization_tokenizer.apply_chat_template(
+                messages, 
+                tokenize=False, 
+                add_generation_prompt=True
+            )
+
+        # Generate the summary
+        inputs = summarization_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
+        outputs = summarization_model.generate(
+            **inputs,
+            max_new_tokens=150,
+            num_beams=4,
+            early_stopping=True
+        )
+        
+        full_summary = summarization_tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # Convert to clean bullet points
+        points = [point.strip() for point in full_summary.split('\n') if point.strip()]
+        points = [p for p in points if not p.startswith('**')][:3]  # Get first 3 points
+        
+        return {
+            "summary": full_summary,
+            "points": points
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/summarize")
+async def summarize(request: Request):
+    """Your new summarization endpoint"""
+    try:
+        data = await request.json()
+        text = data.get("text", "").strip()
+        
+        if not text:
+            raise HTTPException(status_code=400, detail="Text cannot be empty")
+        
+        result = generate_summary(text)
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Summarization failed: {str(e)}")
+
+# Your existing endpoints below (unchanged)
 @app.post("/upload_video")
 async def upload_video(file: UploadFile = File(...)):
     """Receives video file, extracts audio, transcribes speech, and returns text."""
@@ -64,7 +137,6 @@ async def upload_video(file: UploadFile = File(...)):
         print(f"❌ Error in upload_video: {e}")
         return {"error": str(e)}
 
-# ✅ ADD THIS TO FIX THE 404 ERROR
 @app.post("/save_prompt")
 async def save_prompt(request: Request):
     """Saves the user's medical query to a file."""
@@ -117,3 +189,12 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"❌ Error: {e}")
         await websocket.send_text(f"❌ Error: {str(e)}")
+
+def transcribe_audio(file_path: str) -> str:
+    """Transcribes speech from an audio file using Whisper."""
+    try:
+        result = model.transcribe(file_path)
+        return result["text"]
+    except Exception as e:
+        print(f"❌ Transcription error: {e}")
+        return ""

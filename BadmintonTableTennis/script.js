@@ -167,13 +167,13 @@ function sendPrompt() {
 }
 
 function startMedVigil() {
-    let outputBox = document.getElementById("output");
-    outputBox.classList.add("waiting");  // Add loading effect
+    let outputDiv = document.getElementById("output");
+    outputDiv.classList.add("waiting");  // Add loading effect
 
     // Simulate processing time
     setTimeout(() => {
-        outputBox.classList.remove("waiting");
-        outputBox.innerHTML = "✅ MedVigil process complete!";
+        outputDiv.classList.remove("waiting");
+        outputDiv.innerHTML = "✅ MedVigil process complete!";
     }, 3000);
     let socket = new WebSocket("ws://localhost:8000/ws");
 
@@ -253,14 +253,50 @@ document.getElementById('entityPopup').addEventListener('click', (e) => {
   }
 });
 
+// the summarize function
+async function summarizeText() {
+  const inputText = document.getElementById('output').innerText;
+
+  try {
+    const response = await fetch('http://localhost:8000/summarize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: inputText })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Summarization failed");
+    }
+
+    const data = await response.json();
+    console.log("Summary:", data);
+
+    // Display summary in #output div
+    let html = '<h3>Summary:</h3><ul>';
+    data.points.forEach((point, idx) => {
+      html += `<li><strong>Point ${idx + 1}:</strong> ${point}</li>`;
+    });
+    html += '</ul>';
+
+    document.getElementById('output').innerHTML = html;
+
+  } catch (error) {
+    console.error("Summarization error:", error);
+    document.getElementById('output').innerHTML = `
+      <div class="error">
+        ${error.message}
+      </div>
+    `;
+  }
+}
+
+
 // Example usage with your NLP function
 async function analyzeAndShowEntities() {
   const query = document.getElementById('userPrompt').value;
   const entities = await analyzeMedicalQuery(query); // Your NLP function
   showEntitiesPopup(entities);
 }
-
-// Attach to your existing button
-document.getElementById('analyzeBtn').addEventListener('click', analyzeAndShowEntities);
 
 
