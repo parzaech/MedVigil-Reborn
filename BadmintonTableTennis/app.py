@@ -28,75 +28,65 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def load_models():
-    """Load MLX summarization model at startup"""
+    """Load summarization model at startup"""
     global summarization_model, summarization_tokenizer
     try:
-        print("Loading MLX summarization model...")
-        model_name = "andito/mlx_summarization"
+        print("Loading summarization model...")
+        model_name = "sshleifer/distilbart-cnn-12-6"
         summarization_tokenizer = AutoTokenizer.from_pretrained(model_name)
-        summarization_model = AutoModelForCausalLM.from_pretrained(model_name)
+        summarization_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         print("✅ Summarization model loaded successfully")
     except Exception as e:
         print(f"❌ Failed to load summarization model: {e}")
 
 def generate_summary(text: str) -> dict:
-    """Generate summary using your specified MLX model with 3-point format"""
+    """Generate a 3-point numbered summary using distilBART model"""
     try:
-        # Write response to file (as in your original code)
-        with open("response.txt", "w") as f:
-            f.write(text)
-        
-        # Read and modify prompt exactly as you specified
-        with open("response.txt", "r") as file:
-            response_text = file.read().strip()
+        if not summarization_model or not summarization_tokenizer:
+            raise ValueError("Model or tokenizer not loaded.")
 
-        prompt = response_text + "\n\nSummarize in exactly three bullet points."
+        # Add prompt
+        prompt = "Summarize the following into three numbered points:\n" + text.strip()
 
-        # Apply chat template if available
-        if hasattr(summarization_tokenizer, "apply_chat_template") and summarization_tokenizer.chat_template is not None:
-            messages = [{"role": "user", "content": prompt}]
-            prompt = summarization_tokenizer.apply_chat_template(
-                messages, 
-                tokenize=False, 
-                add_generation_prompt=True
-            )
-
-        # Generate the summary
+        # Tokenize input
         inputs = summarization_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
+
+        # Generate output
         outputs = summarization_model.generate(
             **inputs,
             max_new_tokens=150,
             num_beams=4,
             early_stopping=True
         )
-        
+
         full_summary = summarization_tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        # Convert to clean bullet points
-        points = [point.strip() for point in full_summary.split('\n') if point.strip()]
-        points = [p for p in points if not p.startswith('**')][:3]  # Get first 3 points
-        
+
+        # Post-process: Split into numbered points
+        sentences = full_summary.split('. ')
+        numbered_points = [f"{i+1}. {s.strip().rstrip('.')}" for i, s in enumerate(sentences) if s.strip()]
+        numbered_points = numbered_points[:3]  # Only top 3
+
         return {
             "summary": full_summary,
-            "points": points
+            "points": numbered_points
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/summarize")
 async def summarize(request: Request):
-    """Your new summarization endpoint"""
+    """Summarization endpoint"""
     try:
         data = await request.json()
         text = data.get("text", "").strip()
-        
+
         if not text:
             raise HTTPException(status_code=400, detail="Text cannot be empty")
-        
+
         result = generate_summary(text)
         return result
-        
+
     except HTTPException:
         raise
     except Exception as e:
