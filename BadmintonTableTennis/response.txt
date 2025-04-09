@@ -1,58 +1,9 @@
-✅ Connected! Running MedVigil...
-
-
-📄 Read prompt: Hello, my name is Angad Dogra and I want to get rid of my fever.
-
-==========
-
 ## Thinking
 
-Okay, so I'm Angad Dogra and I'm not feeling too great with this fever. First, let's think about what usually helps with fevers. I know that people often take things like paracetamol or ibuprofen. They're pretty common and seem to do the trick for most fevers.
+Okay, so you have cancer. That's tough. First, let's take a deep breath and try to stay calm. It's important to remember that there are many types of cancer, and the specifics really matter. What kind of cancer do you have? That's going to help us figure out what to do next.
 
-Now, I should consider what kind of fever I have. Is it a high fever or just a mild one? That might help me decide which medicine to choose. If it's really high, I might need something stronger like ibuprofen. But if it's just a mild fever, paracetamol should be fine.
+Now, let's think about treatment. There are different ways to tackle cancer, right? We could be looking at surgery, maybe some kind of chemotherapy, or even radiation. It's not just one-size-fits-all. We need to consider what's best for you, based on your age, overall health, and the type of cancer.
 
-Oh, and I should remember to check if I have any allergies or if there are any other health issues that might affect what I can take. That's important because some medicines can be bad news if you're allergic to them.
+Oh, and there's the emotional side of things. This is a big deal, and it's okay to feel scared or overwhelmed. But there are people who can help. We can talk to doctors, of course, but also to counselors or support groups. They can offer a lot of guidance and just be there for you.
 
-Also, I should think about how I'm feeling overall. If I'm really not feeling well, maybe I should try something like a warm bath or drink some fluids. Sometimes, those things can help too.
-
-So, putting it all together, I think the best thing for me is to take some paracetamol or ibuprofen, depending on how
-
-==========
-
-Prompt: 54 tokens, 28.865 tokens-per-sec
-
-Generation: 256 tokens, 5.144 tokens-per-sec
-
-Peak memory: 4.592 GB
-
-📝 Model Response: ## Thinking
-
-Okay, so I'm Angad Dogra and I'm not feeling too great with this fever. First, let's think about what usually helps with fevers. I know that people often take things like paracetamol or ibuprofen. They're pretty common and seem to do the trick for most fevers.
-
-Now, I should consider what kind of fever I have. Is it a high fever or just a mild one? That might help me decide which medicine to choose. If it's really high, I might need something stronger like ibuprofen. But if it's just a mild fever, paracetamol should be fine.
-
-Oh, and I should remember to check if I have any allergies or if there are any other health issues that might affect what I can take. That's important because some medicines can be bad news if you're allergic to them.
-
-Also, I should think about how I'm feeling overall. If I'm really not feeling well, maybe I should try something like a warm bath or drink some fluids. Sometimes, those things can help too.
-
-So, putting it all together, I think the best thing for me is to take some paracetamol or ibuprofen, depending on how
-
-16:36:55.704 | INFO | prefect - Starting temporary server on http://127.0.0.1:8381
-
-See https://docs.prefect.io/3.0/manage/self-host#self-host-a-prefect-server for more information on running a dedicated Prefect server.
-
-16:36:59.824 | INFO | Flow run 'swinging-otter' - Beginning flow run 'swinging-otter' for flow 'MedVigil Processing Flow'
-
-Fetching 6 files: 0%| | 0/6 [00:00<?, ?it/s]
-
-Fetching 6 files: 100%|██████████| 6/6 [00:00<00:00, 9757.98it/s]
-
-16:38:01.452 | INFO | Task run 'test_llm-610' - Finished in state Completed()
-
-16:38:01.500 | INFO | Flow run 'swinging-otter' - Finished in state Completed()
-
-16:38:01.544 | INFO | prefect - Stopping temporary server on http://127.0.0.1:8381
-
-✅ Process completed!
-
-✅ Process completed!
+Also, let's not forget about the practical stuff. We need to think about how to manage your daily life with cancer. That might mean adjusting your work schedule, or figuring out how to keep up with your usual activities. There are resources out there to help with

@@ -67,8 +67,8 @@
 
                 </video>
                 <div class="buttonContainer">
-                <button class = "button-50" id="start">Start Video</button>
-                <button class = "button-50" id="stop">Stop Video</button>
+                <button id="start">Start Video</button>
+                <button id="stop">Stop Video</button>
                 </div>
             </div>
         </div>
@@ -79,16 +79,11 @@
         <div class="button-container">
             <button onclick="sendPrompt()">Submit Query</button>
             <button onclick="startMedVigil()">Run MedVigil</button>
+            <button onclick="summarizeText()">Summarize</button>
         </div>
     
         <div id="output"></div>
     </div>
-
-<button onclick="summarizeText()">Summarize</button>
-
-
-
-
 
     <section class="doctors-section">
   <h2>Our Medical Team</h2>
@@ -122,7 +117,7 @@
             <!-- Doctor 5 -->
     <div class="doctor-card">
       <h3>Dr. Happy Dog</h3>
-      <p class="specialization">Research Expert</p>
+      <p class="specialization">Oncologist</p>
       <p class="experience">5 years experience</p>
     </div>
             <!-- Doctor 6 -->

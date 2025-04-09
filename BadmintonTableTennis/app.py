@@ -6,7 +6,7 @@ import whisper
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 from fastapi.middleware.cors import CORSMiddleware
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from typing import Optional
 import torch
 
@@ -63,8 +63,8 @@ def generate_summary(text: str) -> dict:
 
         # Post-process: Split into numbered points
         sentences = full_summary.split('. ')
-        numbered_points = [f"{i+1}. {s.strip().rstrip('.')}" for i, s in enumerate(sentences) if s.strip()]
-        numbered_points = numbered_points[:3]  # Only top 3
+        numbered_points = [s.strip().rstrip('.') for s in sentences if s.strip()]
+        numbered_points = numbered_points[:5]  # Only top 3
 
         return {
             "summary": full_summary,

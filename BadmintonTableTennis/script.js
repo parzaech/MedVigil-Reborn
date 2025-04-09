@@ -173,7 +173,6 @@ function startMedVigil() {
     // Simulate processing time
     setTimeout(() => {
         outputDiv.classList.remove("waiting");
-        outputDiv.innerHTML = "✅ MedVigil process complete!";
     }, 3000);
     let socket = new WebSocket("ws://localhost:8000/ws");
 
