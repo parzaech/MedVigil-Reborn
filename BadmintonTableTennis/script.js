@@ -105,6 +105,35 @@ function stop() {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop(); // This triggers onstop()
     }
+    // Optional toast-style popup
+    const toast = document.createElement("div");
+    toast.innerText = "✅ Recording Stopped!";
+    toast.style.position = "fixed";
+    toast.style.top = "20px"; // Top right instead of bottom
+    toast.style.right = "30px";
+    toast.style.background = "#28a745";
+    toast.style.color = "white";
+    toast.style.padding = "14px 24px";
+    toast.style.borderRadius = "8px";
+    toast.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
+    toast.style.zIndex = "9999";
+    toast.style.fontSize = "18px"; // Larger font
+    toast.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"; // Nicer font
+    toast.style.fontWeight = "600";
+    toast.style.transition = "opacity 0.4s ease";
+    
+    // Optional fade-in
+    toast.style.opacity = "0";
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = "1";
+    }, 50);
+    
+    // Auto-remove
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 400);
+    }, 5000);
 }
 
 function uploadVideo() {
@@ -142,6 +171,37 @@ function sendPrompt() {
         alert("Please enter a query!");
         return;
     }
+    // Optional toast-style popup
+    const toast = document.createElement("div");
+    toast.innerText = "✅ Query Submitted!";
+    toast.style.position = "fixed";
+    toast.style.top = "20px"; // Top right instead of bottom
+    toast.style.right = "30px";
+    toast.style.background = "#28a745";
+    toast.style.color = "white";
+    toast.style.padding = "14px 24px";
+    toast.style.borderRadius = "8px";
+    toast.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
+    toast.style.zIndex = "9999";
+    toast.style.fontSize = "18px"; // Larger font
+    toast.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"; // Nicer font
+    toast.style.fontWeight = "600";
+    toast.style.transition = "opacity 0.4s ease";
+    
+    // Optional fade-in
+    toast.style.opacity = "0";
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = "1";
+    }, 50);
+    
+    // Auto-remove
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 400);
+    }, 5000);
+    
+
 
     // Debugging log
     console.log("📤 Sending prompt:", userPrompt);
@@ -155,7 +215,7 @@ function sendPrompt() {
     .then(data => {
         console.log("📝 Server Response:", data);
         if (data.message) {
-            alert("✅ Prompt saved successfully!");
+            console.log("✅ Prompt saved successfully!");
         } else {
             alert("❌ Error: " + (data.error || "Unknown error"));
         }
@@ -168,12 +228,10 @@ function sendPrompt() {
 
 function startMedVigil() {
     let outputDiv = document.getElementById("output");
-    outputDiv.classList.add("waiting");  // Add loading effect
 
-    // Simulate processing time
-    setTimeout(() => {
-        outputDiv.classList.remove("waiting");
-    }, 3000);
+    const loading = document.getElementById("loading");
+    loading.style.display = "block"; // Show spinner
+
     let socket = new WebSocket("ws://localhost:8000/ws");
 
     socket.onopen = function () {
@@ -187,6 +245,10 @@ function startMedVigil() {
         newMessage.textContent = event.data;
         outputDiv.appendChild(newMessage);
 
+        // Hide spinner once the output is filled
+        loading.style.display = "none";
+
+
         // Auto-scroll to latest message
         outputDiv.scrollTop = outputDiv.scrollHeight;
     };
@@ -194,9 +256,11 @@ function startMedVigil() {
     socket.onerror = function (event) {
         console.error("❌ WebSocket error:", event);
         outputDiv.innerHTML = "<p style='color: red;'>❌ Error connecting to WebSocket!</p>";
+        loading.style.display = "none"; // Hide on error
     };
 
     socket.onclose = function (event) {
+        loading.style.display = "none"; // Always hide spinner on close
         if (event.wasClean) {
             console.log("✅ WebSocket closed cleanly.");
             outputDiv.innerHTML += "<p>✅ Process completed!</p>";
@@ -208,53 +272,14 @@ function startMedVigil() {
     };
 }
 
-// NER Section
-// Function to show entities in popup
-function showEntitiesPopup(entities) {
-  // Populate entity tags
-  populateEntitySection('symptomEntities', entities.symptoms);
-  populateEntitySection('medicationEntities', entities.medications); 
-  populateEntitySection('conditionEntities', entities.conditions);
-  
-  // Show popup
-  document.getElementById('entityPopup').style.display = 'flex';
-  
-  // Add analytics event
-  logEntityAnalysis(entities);
-}
 
-// Helper function to create entity tags
-function populateEntitySection(containerId, entities) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  
-  if (entities && entities.length > 0) {
-    entities.forEach(entity => {
-      const tag = document.createElement('div');
-      tag.className = 'entity-tag';
-      tag.textContent = entity;
-      container.appendChild(tag);
-    });
-  } else {
-    container.innerHTML = '<span class="no-entities">None detected</span>';
-  }
-}
-
-// Close popup handlers
-document.querySelector('.close-btn').addEventListener('click', () => {
-  document.getElementById('entityPopup').style.display = 'none';
-});
-
-// Close when clicking outside content
-document.getElementById('entityPopup').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('entityPopup')) {
-    document.getElementById('entityPopup').style.display = 'none';
-  }
-});
 
 // the summarize function
 async function summarizeText() {
   const inputText = document.getElementById('output').innerText;
+
+  const loading = document.getElementById('loading');
+  loading.style.display = 'block'; // Show spinner
 
   try {
     const response = await fetch('http://localhost:8000/summarize', {
@@ -287,15 +312,93 @@ async function summarizeText() {
         ${error.message}
       </div>
     `;
+  } finally{
+    loading.style.display = 'none'; // Hide spinner
   }
 }
 
+// Doctor Mapping
+const doctorMapping = {
+  "heart": "Dr. Akhilesh Pandey",
+  "brain": "Dr. Chandan Kumar",
+  "cancer": "Dr. Happy Dog (Oncologist)",
+  "fever": "Dr. Mehul Aggarwal (General Physician)",
+  "surgery": "Dr. Raj Sharma (Surgeon)",
+  "pet": "Dr. Preeti Verma (Veterinary Specialist)",
+};
 
-// Example usage with your NLP function
-async function analyzeAndShowEntities() {
-  const query = document.getElementById('userPrompt').value;
-  const entities = await analyzeMedicalQuery(query); // Your NLP function
-  showEntitiesPopup(entities);
+// Suggestion Function
+function suggestDoctorFromQuery() {
+  const queryText = document.getElementById("userPrompt").value.toLowerCase();
+  const outputDiv = document.getElementById("output");
+
+
+  let suggestedDoctor = null;
+  for (const keyword in doctorMapping) {
+      if (queryText.includes(keyword)) {
+          suggestedDoctor = doctorMapping[keyword];
+          break;
+      }
+  }
+
+  if (suggestedDoctor) {
+      showDoctorSplash(suggestedDoctor);
+  } else {
+      outputDiv.innerHTML += "<p style='color: gray;'>❓ Couldn't determine a specialist. Please try again with more specific symptoms.</p>";
+  }
 }
 
+// Doctor splash page function
 
+function showDoctorSplash(doctorName) {
+  // Check if splash already exists
+  let splash = document.getElementById("splash");
+  if (!splash) {
+    splash = document.createElement("div");
+    splash.id = "splash";
+    splash.style.position = "fixed";
+    splash.style.top = "0";
+    splash.style.left = "0";
+    splash.style.width = "100vw";
+    splash.style.height = "100vh";
+    splash.style.background = "rgba(0, 0, 0, 0.9)";
+    splash.style.color = "white";
+    splash.style.display = "flex";
+    splash.style.flexDirection = "column";
+    splash.style.justifyContent = "center";
+    splash.style.alignItems = "center";
+    splash.style.textAlign = "center";
+    splash.style.zIndex = "99999";
+    splash.style.opacity = "0";
+    splash.style.transition = "opacity 0.6s ease";
+    splash.style.fontFamily = "'Segoe UI', sans-serif";
+    splash.style.fontSize = "32px";
+
+    const title = document.createElement("div");
+    title.textContent = "🩺 You are suggested this doctor:";
+    title.style.marginBottom = "20px";
+
+    const doctorElem = document.createElement("div");
+    doctorElem.id = "doctorName";
+    doctorElem.style.fontSize = "48px";
+    doctorElem.style.color = "#ffe066";
+
+    splash.appendChild(title);
+    splash.appendChild(doctorElem);
+    document.body.appendChild(splash);
+  }
+
+  // Set doctor name
+  const doctorElem = document.getElementById("doctorName");
+  doctorElem.textContent = doctorName;
+
+  // Show splash
+  splash.classList.add("show");
+  splash.style.opacity = "1";
+
+  // Hide after 5 seconds
+  setTimeout(() => {
+    splash.style.opacity = "0";
+    splash.classList.remove("show");
+  }, 5000);
+}

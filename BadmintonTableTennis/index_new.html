@@ -74,16 +74,29 @@
         </div>
     </div>
     <div class="below">
-        <input type="text" id="userPrompt" placeholder="Your Query will appear here..." readonly>
+        <input type="text" id="userPrompt" placeholder="Your Query will appear here..." >
     
         <div class="button-container">
             <button onclick="sendPrompt()">Submit Query</button>
             <button onclick="startMedVigil()">Run MedVigil</button>
             <button onclick="summarizeText()">Summarize</button>
+            <button onclick="suggestDoctorFromQuery()">Suggest Doctor</button>
         </div>
-    
+        
+        <div id="loading" style="display: none;">
+          <div class="spinner"></div>
+        </div>
+
         <div id="output"></div>
     </div>
+
+    <div id="splash" class="splash-hidden">
+      <h2>You are suggested this doctor:</h2>
+      <p id="doctorName"></p>
+    </div>
+
+    
+  
 
     <section class="doctors-section">
   <h2>Our Medical Team</h2>

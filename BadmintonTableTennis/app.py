@@ -64,7 +64,7 @@ def generate_summary(text: str) -> dict:
         # Post-process: Split into numbered points
         sentences = full_summary.split('. ')
         numbered_points = [s.strip().rstrip('.') for s in sentences if s.strip()]
-        numbered_points = numbered_points[:5]  # Only top 3
+        numbered_points = numbered_points[:3]  # Only top 3
 
         return {
             "summary": full_summary,
