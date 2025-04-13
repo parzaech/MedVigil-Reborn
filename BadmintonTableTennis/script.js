@@ -351,46 +351,60 @@ function suggestDoctorFromQuery() {
 // Doctor splash page function
 
 function showDoctorSplash(doctorName) {
-  // Check if splash already exists
   let splash = document.getElementById("splash");
+
+  // If splash doesn't exist, create it
   if (!splash) {
     splash = document.createElement("div");
     splash.id = "splash";
-    splash.style.position = "fixed";
-    splash.style.top = "0";
-    splash.style.left = "0";
-    splash.style.width = "100vw";
-    splash.style.height = "100vh";
-    splash.style.background = "rgba(0, 0, 0, 0.9)";
-    splash.style.color = "white";
-    splash.style.display = "flex";
-    splash.style.flexDirection = "column";
-    splash.style.justifyContent = "center";
-    splash.style.alignItems = "center";
-    splash.style.textAlign = "center";
-    splash.style.zIndex = "99999";
-    splash.style.opacity = "0";
-    splash.style.transition = "opacity 0.6s ease";
-    splash.style.fontFamily = "'Segoe UI', sans-serif";
-    splash.style.fontSize = "32px";
-
-    const title = document.createElement("div");
-    title.textContent = "🩺 You are suggested this doctor:";
-    title.style.marginBottom = "20px";
-
-    const doctorElem = document.createElement("div");
-    doctorElem.id = "doctorName";
-    doctorElem.style.fontSize = "48px";
-    doctorElem.style.color = "#ffe066";
-
-    splash.appendChild(title);
-    splash.appendChild(doctorElem);
     document.body.appendChild(splash);
   }
 
-  // Set doctor name
-  const doctorElem = document.getElementById("doctorName");
+  // Forcefully apply styles even if splash existed
+  splash.style.position = "fixed";
+  splash.style.top = "0";
+  splash.style.left = "0";
+  splash.style.width = "100vw";
+  splash.style.height = "100vh";
+  splash.style.background = "#000"; // Full black background
+  splash.style.color = "white";
+  splash.style.display = "flex";
+  splash.style.flexDirection = "column";
+  splash.style.justifyContent = "center";
+  splash.style.alignItems = "center";
+  splash.style.textAlign = "center";
+  splash.style.zIndex = "99999";
+  splash.style.opacity = "0";
+  splash.style.transition = "opacity 0.6s ease";
+  splash.style.fontFamily = "'Segoe UI', sans-serif";
+  splash.style.fontSize = "32px";
+
+  // Clear previous content
+  splash.innerHTML = "";
+
+  // Create title
+  const title = document.createElement("div");
+  title.textContent = "🩺 You are suggested this doctor:";
+  title.style.marginBottom = "20px";
+
+  // Doctor name
+  const doctorElem = document.createElement("div");
+  doctorElem.id = "doctorName";
+  doctorElem.style.fontSize = "48px";
+  doctorElem.style.color = "white";
+  doctorElem.style.marginBottom = "5px";
   doctorElem.textContent = doctorName;
+
+  // Timing info
+  const timingElem = document.createElement("div");
+  timingElem.textContent = "🕒 Visit them between 10:00 AM – 4:00 PM";
+  timingElem.style.fontSize = "24px";
+  timingElem.style.color = "#ccc";
+
+  // Append all
+  splash.appendChild(title);
+  splash.appendChild(doctorElem);
+  splash.appendChild(timingElem);
 
   // Show splash
   splash.classList.add("show");

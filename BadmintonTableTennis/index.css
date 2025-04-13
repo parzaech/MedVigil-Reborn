@@ -392,7 +392,7 @@ button:active {
 }
 
 
-/* The splash page css */
+/* The splash page css*/
 #splash {
   position: fixed;
   top: 0;
@@ -434,3 +434,4 @@ button:active {
       transform: translateY(0);
   }
 }
+
