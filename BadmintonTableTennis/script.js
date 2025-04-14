@@ -276,12 +276,20 @@ function startMedVigil() {
 
 // the summarize function
 async function summarizeText() {
-  const inputText = document.getElementById('output').innerText;
-
   const loading = document.getElementById('loading');
   loading.style.display = 'block'; // Show spinner
 
   try {
+    // Fetch response.txt from backend
+    const fetchTextResponse = await fetch('http://localhost:8000/read-response');
+    if (!fetchTextResponse.ok) {
+      throw new Error("Failed to load text from response.txt");
+    }
+
+    const textData = await fetchTextResponse.json();
+    const inputText = textData.text;
+
+    // Now send it to summarization endpoint
     const response = await fetch('http://localhost:8000/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -296,7 +304,7 @@ async function summarizeText() {
     const data = await response.json();
     console.log("Summary:", data);
 
-    // Display summary in #output div
+    // Display summary
     let html = '<h3>Summary:</h3><ul>';
     data.points.forEach((point, idx) => {
       html += `<li><strong>Point ${idx + 1}:</strong> ${point}</li>`;
@@ -305,6 +313,31 @@ async function summarizeText() {
 
     document.getElementById('output').innerHTML = html;
 
+
+    const userPrompt = document.getElementById("userPrompt").value;
+    document.getElementById("user-ailment").innerText = userPrompt;
+
+    // Add summary points to the #llm-summary
+    let llmHtml = '<ul>';
+    data.points.forEach((point, idx) => {
+      llmHtml += `<li><strong>Point ${idx + 1}:</strong> ${point}</li>`;
+    });
+    llmHtml += '</ul>';
+    document.getElementById('llm-summary').innerHTML = llmHtml;
+
+    // Match doctor
+    let suggestedDoctor = "Dr. Maya Singh (General Consultant)";
+    for (const keyword in doctorMapping) {
+      if (userPrompt.toLowerCase().includes(keyword)) {
+        suggestedDoctor = doctorMapping[keyword];
+        break;
+      }
+    }
+    document.getElementById("suggested-doctor").innerText = suggestedDoctor;
+
+    // Show the summary section
+    document.getElementById("summary-section").classList.add("show");
+
   } catch (error) {
     console.error("Summarization error:", error);
     document.getElementById('output').innerHTML = `
@@ -312,10 +345,11 @@ async function summarizeText() {
         ${error.message}
       </div>
     `;
-  } finally{
+  } finally {
     loading.style.display = 'none'; // Hide spinner
   }
 }
+
 
 // Doctor Mapping
 const doctorMapping = {
@@ -345,6 +379,14 @@ function suggestDoctorFromQuery() {
       showDoctorSplash(suggestedDoctor);
   } else {
       outputDiv.innerHTML += "<p style='color: gray;'>❓ Couldn't determine a specialist. Please try again with more specific symptoms.</p>";
+  }
+}
+
+//scrolling function
+function scrollToSummarySection() {
+  const summarySection = document.getElementById("summary-section");
+  if (summarySection) {
+    summarySection.scrollIntoView({ behavior: "smooth" });
   }
 }
 
@@ -384,7 +426,7 @@ function showDoctorSplash(doctorName) {
 
   // Create title
   const title = document.createElement("div");
-  title.textContent = "🩺 You are suggested this doctor:";
+  title.textContent = "🩺 Your doctor suggestion is:";
   title.style.marginBottom = "20px";
 
   // Doctor name
@@ -397,7 +439,7 @@ function showDoctorSplash(doctorName) {
 
   // Timing info
   const timingElem = document.createElement("div");
-  timingElem.textContent = "🕒 Visit them between 10:00 AM – 4:00 PM";
+  timingElem.textContent = "🕒 Visit them between 10:00 AM - 4:00 PM";
   timingElem.style.fontSize = "24px";
   timingElem.style.color = "#ccc";
 

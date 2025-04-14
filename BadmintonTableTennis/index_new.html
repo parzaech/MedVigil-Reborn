@@ -95,6 +95,29 @@
       <p id="doctorName"></p>
     </div>
 
+
+    <div id="summary-section">
+      <div class="summary-grid">
+        <!-- Left Side -->
+        <div class="summary-left">
+          <h3>User Concern:</h3>
+          <p id="user-ailment"></p>
+    
+          <h3>Medical Summary:</h3>
+          <div id="llm-summary"></div>
+        </div>
+    
+        <!-- Right Side -->
+        <div class="summary-right">
+          <h3>Suggested Doctor:</h3>
+          <p id="suggested-doctor"></p>
+    
+          <h3>Recommended Time:</h3>
+          <p id="doctor-time">Tomorrow at 10:00 AM</p>
+        </div>
+      </div>
+    </div>
+    
     
   
 
@@ -144,27 +167,7 @@
 </section>
 
 <!-- Entity Recognition Popup -->
-<div id="entityPopup" class="entity-popup">
-  <div class="popup-content">
-    <span class="close-btn">&times;</span>
-    <h3>Medical Entities Detected</h3>
-    
-    <div class="entity-category">
-      <h4><i class="fas fa-thermometer-half"></i> Symptoms</h4>
-      <div id="symptomEntities" class="entity-tags"></div>
-    </div>
-    
-    <div class="entity-category">
-      <h4><i class="fas fa-pills"></i> Medications</h4>
-      <div id="medicationEntities" class="entity-tags"></div>
-    </div>
-    
-    <div class="entity-category">
-      <h4><i class="fas fa-disease"></i> Conditions</h4>
-      <div id="conditionEntities" class="entity-tags"></div>
-    </div>
-  </div>
-</div>
+
     
 
     <script type="module">

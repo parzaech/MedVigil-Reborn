@@ -188,3 +188,13 @@ def transcribe_audio(file_path: str) -> str:
     except Exception as e:
         print(f"❌ Transcription error: {e}")
         return ""
+
+@app.get("/read-response")
+async def read_response():
+    """Serve the contents of response.txt"""
+    try:
+        with open("response.txt", "r") as file:
+            content = file.read()
+        return {"text": content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
