@@ -304,7 +304,8 @@ async function summarizeText() {
     const data = await response.json();
     console.log("Summary:", data);
 
-    // Display summary
+    //Display summary
+    /*
     let html = '<h3>Summary:</h3><ul>';
     data.points.forEach((point, idx) => {
       html += `<li><strong>Point ${idx + 1}:</strong> ${point}</li>`;
@@ -312,7 +313,8 @@ async function summarizeText() {
     html += '</ul>';
 
     document.getElementById('output').innerHTML = html;
-
+    */
+   document.getElementById('output').style.display = "none";
 
     const userPrompt = document.getElementById("userPrompt").value;
     document.getElementById("user-ailment").innerText = userPrompt;
