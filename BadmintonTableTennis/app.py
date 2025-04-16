@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from typing import Optional
 import torch
+from pydantic import BaseModel
+from deep_translator import GoogleTranslator
 
 app = FastAPI()
 
@@ -198,3 +200,17 @@ async def read_response():
         return {"text": content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+class TranslationRequest(BaseModel):
+    points: list[str]
+
+@app.post("/translate-to-hindi")
+async def translate_to_hindi(request: TranslationRequest):
+    translated = []
+    for sentence in request.points:
+        try:
+            translated_sentence = GoogleTranslator(source='en', target='hi').translate(sentence)
+            translated.append(translated_sentence)
+        except Exception:
+            translated.append(f"[❗ Translation failed]: {sentence}")
+    return {"translated_points": translated}

@@ -460,3 +460,88 @@ function showDoctorSplash(doctorName) {
     splash.classList.remove("show");
   }, 5000);
 }
+
+function printForm(divName) {
+  const contentToPrint = document.getElementById(divName).innerHTML;
+
+  const printContents = `
+    <html>
+      <head>
+        <title>MedVigil Form</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            color: #222;
+          }
+          h1 {
+            text-align: center;
+            color: #0077cc;
+            margin-bottom: 30px;
+          }
+          .form-section {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+          }
+          .form-section h2 {
+            margin-top: 0;
+            color: #444;
+          }
+          .form-row {
+            margin-bottom: 15px;
+          }
+          .form-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>🩺 MedVigil Form</h1>
+        <div class="form-section">
+          ${contentToPrint}
+        </div>
+      </body>
+    </html>
+  `;
+
+  const w = window.open('', '', 'width=800,height=600');
+  w.document.write(printContents);
+  w.document.close();
+  w.focus();
+  w.print();
+  w.close();
+}
+
+async function translateToHindi(divName) {
+  const summaryDiv = document.getElementById(divName);
+  const listItems = Array.from(summaryDiv.querySelectorAll('li')).map(li => li.innerText);
+
+  try {
+    const response = await fetch('http://localhost:8000/translate-to-hindi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ points: listItems })
+    });
+
+    if (!response.ok) {
+      throw new Error("Translation failed");
+    }
+
+    const data = await response.json();
+
+    let translatedHtml = '<ul>';
+    data.translated_points.forEach((point, idx) => {
+      translatedHtml += `<li>${point}</li>`;
+    });
+    translatedHtml += '</ul>';
+
+    summaryDiv.innerHTML = translatedHtml;
+  } catch (err) {
+    console.error("Translation Error:", err);
+    summaryDiv.innerHTML += `<div class="error">❌ Translation failed: ${err.message}</div>`;
+  }
+}
