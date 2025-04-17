@@ -1,4 +1,4 @@
-var animationWords = ['Tell us what ails you.', 'AI in Medicine.', 'We will fix you.', ':)'];
+var animationWords = ['Tell us what ails you.', 'AI in Medicine.', 'We will fix you.'];
 var animationInterval;
 
 function switchToImages() {
