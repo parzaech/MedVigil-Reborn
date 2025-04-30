@@ -12,19 +12,24 @@ body{
   transition: all 0.6s ease-out;
   color:black;
   font-family: "Poiret One", sans-serif;
+  margin-left: 100px;
 }
 
 #title{
   color: black;
-  font-family: "Sixtyfour Convergence", sans-serif;
+  font-family: "Poiret One", sans-serif;
   font-size: 50px;
   font-weight: bolder;
   z-index: 1;
   background-color: transparent;
   position: absolute;
-  margin-top: 30px;
-  margin-left: 30px;
+  margin-left: 26px;
 }
+
+.after-animation p{
+  margin-top: 100px;
+}
+
 
 .image-container {
   position: absolute;
@@ -35,6 +40,8 @@ body{
   flex-direction: column;
   align-items: center;
   gap: 30px; /* Controls space between images */
+  z-index: 1;
+
 }
 
 .image-container img {
@@ -42,11 +49,15 @@ body{
   opacity: 0;
   transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth easing */
   transform: translateY(20px); /* Starts slightly below */
+  z-index: 1;
+
 }
 
 .image-container img.active {
   opacity: 1;
   transform: translateY(0);
+  z-index: 1;
+
 }
 .container {
   display: flex;
@@ -55,6 +66,8 @@ body{
   padding-bottom: 0; /* Remove any internal spacing */
   position: relative; /* Needed for absolute child positioning */
   overflow: hidden;
+  z-index: 1;
+
 }
 
 .left {
@@ -150,6 +163,7 @@ video {
   position: relative;
   display: inline-block;
   font-family: "Poiret One", sans-serif;
+
 }
 
 .doctors-section h2::after {
@@ -160,6 +174,7 @@ video {
   background: linear-gradient(90deg, #3a7bd5, #00d2ff); /* Gradient accent */
   bottom: -10px;
   left: 25%;
+
 }
 
 .doctors-grid {
@@ -168,6 +183,7 @@ video {
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
+
 }
 
 .doctor-card {
@@ -184,6 +200,7 @@ video {
   transform: translateY(-10px);
   box-shadow: 0 15px 30px rgba(58, 123, 213, 0.2); /* Blue tint on hover */
   border-color: #3a7bd5; /* Accent color */
+
 }
 
 .doctor-card h3 {
@@ -192,17 +209,20 @@ video {
   color: black;
   font-family: "Poiret One", sans-serif;
 
+
 }
 
 .specialization {
   color: #9fd6e2; /* Cyan accent */
   font-weight: 400;
   margin-bottom: 7px;
+
 }
 
 .experience {
   color: #b0b0b0; /* Lighter gray */
   padding-bottom: 20px;
+
 }
 
 /* Centering and spacing */
@@ -215,6 +235,7 @@ video {
   background-color: beige;
   padding-top: 30px;
   /* border: 2px solid black; */
+
 }
 
 
@@ -231,17 +252,20 @@ input#userPrompt {
   background-color: beige;
   transition: all 0.3s ease-in-out;
   color: black;
+
 }
 
 input#userPrompt::placeholder {
   color: black;
   opacity: 1;
+
 }
 
 input#userPrompt:focus {
   border-color: #007bff;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
   outline: none;
+
 }
 
 /* Button container: aligns buttons side by side */
@@ -249,6 +273,7 @@ input#userPrompt:focus {
   display: flex;
   gap: 15px; /* Space between buttons */
   margin-top: 10px;
+
 }
 
 /* Buttons */
@@ -264,6 +289,7 @@ button {
   transition: all 0.2s ease-in-out;
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
   font-family: "Poiret One", sans-serif;
+
 }
 
 /* Button hover effect */
@@ -292,6 +318,7 @@ button:active {
   box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2); /* Optional: subtle beige glow */
   position: relative;
   overflow-y: auto;
+
 }
 
 /* Ensure "Waiting for output" text is beige */
@@ -301,6 +328,7 @@ button:active {
   display: block;
   font-style: italic;
   opacity: 0.8;
+
 }
 
 /* Loading effect when waiting for output */
@@ -308,6 +336,7 @@ button:active {
   background: black; /* Keep background black */
   color: beige; /* Text remains beige */
   animation: pulse 1.5s infinite;
+
 }
 
 /* Animation for loading effect */
@@ -323,6 +352,7 @@ button:active {
   justify-content: center;
   align-items: center;
   padding: 10px;
+
 }
 
 .spinner {
@@ -332,6 +362,7 @@ button:active {
   width: 30px;
   height: 30px;
   animation: spin 0.8s linear infinite;
+
 }
 
 @keyframes spin {
@@ -356,6 +387,7 @@ button:active {
   box-shadow: 0 0 18px rgba(255, 192, 203, 0.5);
   color: #3d0f17;
   font-family: "Poiret One", sans-serif;
+
 }
 
 #summary-section.show {
@@ -363,6 +395,7 @@ button:active {
   transform: translateY(0);
   visibility: visible;
   pointer-events: auto;
+
 }
 
 .summary-grid {
@@ -370,6 +403,7 @@ button:active {
   grid-template-columns: 1fr 1fr;
   gap: 35px;
   /* margin-top: 25px; */
+
 }
 
 .summary-left,
@@ -379,6 +413,7 @@ button:active {
   border-radius: 12px;
   border: 1px solid #ff99aa;
   box-shadow: inset 0 0 10px rgba(255, 182, 193, 0.3);
+
 }
 
 .summary-left h3,
@@ -389,6 +424,7 @@ button:active {
   border-bottom: 1px solid #ff99aa;
   padding-bottom: 8px;
   margin-bottom: 16px;
+
 }
 
 .summary-left ul,
@@ -402,6 +438,7 @@ button:active {
   margin-bottom: 10px;
   line-height: 1.6;
   color: #5c1a26;
+
 }
 
 #suggested-doctor {
@@ -410,6 +447,7 @@ button:active {
   color: #ff3366;
   margin-bottom: 10px;
   text-shadow: 0 0 8px rgba(255, 102, 153, 0.2);
+
 }
 
 #user-ailment {
@@ -417,14 +455,13 @@ button:active {
   color: #7a2e3a;
   font-size: 1.05em;
   margin-bottom: 10px;
+
 }
-
-
 /* photo section */
-
 
 .workflow-section img {
   margin-left: 150px;
   border: 2px solid black;
   border-radius: 1%;
+
 }

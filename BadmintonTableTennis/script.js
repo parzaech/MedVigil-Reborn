@@ -2,27 +2,19 @@ var animationWords = ['Tell us what ails you.', 'AI in Medicine.'];
 var animationInterval;
 
 
-
-
-function switchToImages() {
-  // 1. Fade out animated text
+function switchToFinalMessage() {
+  // Fade out the animated text
   $('.word').animate({ opacity: 0 }, 600, function() {
     $(this).hide();
-    
-    // 2. Fade in text image
-    $('#text-image')
+
+    // Fade in the transparent div with your message
+    $('#final-message')
       .css('opacity', 0)
       .show()
-      .animate({ opacity: 1 }, 800, function() {
-        
-        // 3. After text image appears, show secondary image
-        $('#secondary-image')
-          .css('opacity', 0)
-          .show()
-          .animate({ opacity: 1 }, 800);
-      });
+      .animate({ opacity: 1 }, 800);
   });
 }
+
 function runAnimationOnce() {
   var part,
       i = 0,
@@ -48,7 +40,7 @@ function runAnimationOnce() {
         offset = 0;
         if (i >= len) {
           clearInterval(animationInterval);
-          setTimeout(switchToImages, 500); // Changed from switchToImage
+          setTimeout(switchToFinalMessage, 500); // Changed from switchToImage
           return;
         }
       }

@@ -56,15 +56,21 @@
   </div>
 
   
-  <div id="title">Charaka AI</div>
+  <img src="title-image.png" id="title"></img>
 
     <div class="container">
      
         <div class="left">
           <span class="word"></span>
-          <div class = "image-container">
-               <img id="text-image" src="last.png" alt="Project Description" style="display: none;"> 
+          <!-- <div class = "image-container"> -->
+               <!-- <img id="text-image" src="last.png" alt="Project Description" style="display: none;">  -->
               <!-- <img id="secondary-image" src="workflow-1.png" alt="Additional Graphic" style="display: none;">  -->
+          <!-- </div> -->
+          <div class="after-animation" id="final-message" style="display: none; opacity: 0; background: transparent; font-family: 'Poiret One', sans-serif; color: black; margin-left:150px"
+          ">
+            <!-- The words you want to show after animation -->
+            <p style="font-size: 30px;">Charaka is an Al-powered medical assistant that helps diagnose ailments through interactive consultation. 
+              Our system combines advanced machine learning with medical expertise to provide preliminary assessments..</p>
           </div>
           
         </div>
@@ -81,7 +87,7 @@
             </div>
         </div>
     </div>
-
+  
     <div class="below">
         <input type="text" id="userPrompt" placeholder="Your Query will appear here..." >
     
@@ -128,7 +134,6 @@
         </div>
       </div>
     </div>
-    
     
   <section class="workflow-section">
     <img height = "25%" width = "80%" src="workflow-Photoroom.png"></img>
@@ -207,5 +212,7 @@
         const storage = getStorage(app); // Initialize Firebase Storage
         */
     </script>
+
+
 </body>
 </html>
